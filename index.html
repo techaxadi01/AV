@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baudhayana Triplets – Visual Explainer</title>
+<style>
+:root{--bg:#fffaf0;--card:#ffffff;--tx:#2b2118;--mut:#6b5b4b;--bd:#e6d8c3;--ac:#c2410c;--c1:#2563eb;--c2:#16a34a;--c3:#dc2626;--ok:#15803d;--bad:#b45309;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1511;--card:#251e18;--tx:#f3e9dc;--mut:#b9a892;--bd:#3d3228;--ac:#fb923c;--c1:#60a5fa;--c2:#4ade80;--c3:#f87171;--ok:#4ade80;--bad:#fbbf24;color-scheme:dark}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55}
+main{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+h1{font-size:1.7rem;margin:.2em 0}
+h2{font-size:1.25rem;margin:0 0 .5em;color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px;margin:16px 0}
+.sub{color:var(--mut);margin:0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tabs button{border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px 12px;border-radius:999px;cursor:pointer;font-size:.92rem}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.ctl{display:grid;grid-template-columns:auto 1fr auto;gap:8px 12px;align-items:center;margin:8px 0}
+.ctl input{width:100%}
+.val{font-weight:700;min-width:2ch;text-align:right}
+svg{width:100%;height:auto;max-height:520px;display:block}
+.eq{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;font-size:1.1rem;font-weight:700;margin:10px 0}
+.eq span{padding:6px 12px;border-radius:10px;border:1px solid var(--bd)}
+.badge{text-align:center;font-weight:700;padding:8px;border-radius:10px;margin-top:6px}
+.badge.ok{color:var(--ok);border:1px solid var(--ok)}
+.badge.no{color:var(--bad);border:1px solid var(--bad)}
+.formula{font-size:1.05rem;padding:10px 12px;border-left:4px solid var(--ac);background:var(--bg);border-radius:6px;margin:8px 0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:420px;text-align:center}
+th,td{border:1px solid var(--bd);padding:6px 8px}
+th{background:var(--bg)}
+.a{color:var(--c1)}.b{color:var(--c2)}.c{color:var(--c3)}
+input[type=text]{width:90px;padding:6px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:1rem}
+.btn{border:none;background:var(--ac);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:1rem}
+.prop{border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:10px 12px;margin:10px 0;background:var(--bg)}
+.prop h3{margin:0 0 4px;font-size:1.02rem}
+.prop p{margin:4px 0}
+.ex{margin-top:6px;padding:6px 10px;border-radius:8px;background:var(--card);border:1px dashed var(--bd)}
+.note{font-size:.92rem;color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<h1>📐 Baudhayana (Pythagorean) Triplets</h1>
+<p class="sub">Three whole numbers that fit a right-angled triangle perfectly.</p>
+
+<div class="card">
+<h2>1. The big idea</h2>
+<p>Around 800 BCE, the Indian mathematician <b>Baudhayana</b> wrote in his <i>Sulba Sutra</i> that in a right-angled triangle, the square on the longest side (hypotenuse) equals the sum of the squares on the other two sides. Europe later called it the Pythagoras theorem.</p>
+<div class="formula"><b class="a">a</b>² + <b class="b">b</b>² = <b class="c">c</b>²  &nbsp;(c is the longest side)</div>
+<p>A <b>Baudhayana triplet</b> is a set of <u>three whole numbers</u> (a, b, c) that satisfy this. Example: <b>3, 4, 5</b> because 9 + 16 = 25.</p>
+<p class="note">Fun fact: builders used a rope with 12 equal knots, bent into 3 + 4 + 5, to make a perfect right angle.</p>
+</div>
+
+<div class="card">
+<h2>2. See it: squares on the sides</h2>
+<p class="sub">Pick a way to choose the triangle. The areas of the blue and green squares always add up to the red one. A triplet appears only when all three sides are whole numbers.</p>
+<div class="tabs" id="tabs">
+<button data-m="free" class="on">Try any a, b</button>
+<button data-m="r1">Rule 1: m only</button>
+<button data-m="r2">Rule 2: m and n</button>
+</div>
+<div id="controls"></div>
+<svg id="svg" viewBox="0 0 600 520" role="img" aria-label="Right triangle with squares on its three sides"></svg>
+<div class="eq" id="eq"></div>
+<div class="badge" id="badge"></div>
+<div class="formula" id="work"></div>
+</div>
+
+<div class="card">
+<h2>3. Rule 1: calculate a triplet from m</h2>
+<p><b>Rule 1 (class 8 textbook rule):</b> for any natural number <b>m &gt; 1</b>,</p>
+<div class="formula">(<b class="a">2m</b>, <b class="b">m² − 1</b>, <b class="c">m² + 1</b>) is a triplet</div>
+<p><b>Why it works:</b> (m²+1)² − (m²−1)² = 4m² = (2m)². So (2m)² + (m²−1)² = (m²+1)². ✔</p>
+<div class="scroll"><table>
+<tr><th>m</th><th class="a">2m</th><th class="b">m² − 1</th><th class="c">m² + 1</th><th>Check</th></tr>
+<tbody id="t1"></tbody></table></div>
+</div>
+
+<div class="card">
+<h2>4. Rule 2: more triplets using m and n</h2>
+<p>Rule 1 only uses one number. Rule 2 uses <b>two</b> whole numbers, so it gives many more triplets. Pick whole numbers <b>m &gt; n</b> (both at least 1):</p>
+<div class="formula">(<b class="a">m² − n²</b>, <b class="b">2mn</b>, <b class="c">m² + n²</b>)</div>
+<p class="note">Rule 1 is Rule 2 with n = 1. Example: m = 3, n = 2 gives (5, 12, 13). If m and n have no common factor and one is even, you get a “primitive” triplet that can’t be shrunk.</p>
+<p><b>Why it works:</b> (m² + n²)² − (m² − n²)² = 4m²n² = (2mn)². So (m² − n²)² + (2mn)² = (m² + n²)². ✔</p>
+<p><b>Worked example:</b> m = 5, n = 2 → m² − n² = 25 − 4 = <b class="a">21</b>, 2mn = 2×5×2 = <b class="b">20</b>, m² + n² = 25 + 4 = <b class="c">29</b>. Check: 21² + 20² = 441 + 400 = 841 = 29². ✔</p>
+<div class="scroll"><table>
+<tr><th>m</th><th>n</th><th class="a">m² − n²</th><th class="b">2mn</th><th class="c">m² + n²</th><th>Check</th><th>Type</th></tr>
+<tbody id="t2"></tbody></table></div>
+<p class="note">“Primitive” means the three numbers have no common factor, so the triplet cannot be shrunk. Example: m = 3, n = 1 gives (8, 6, 10), which is 2 × (4, 3, 5).</p>
+<p style="margin-top:12px"><b>Try it:</b> m = <input type="text" id="cm" inputmode="numeric" style="width:60px" value="4"> n = <input type="text" id="cn" inputmode="numeric" style="width:60px" value="1"> &nbsp;<button class="btn" id="cgo">Make triplet</button></p>
+<div id="cout" style="font-weight:600"></div>
+<p class="note">Any triplet can also be scaled: multiply all three by k. From (3, 4, 5): (6, 8, 10), (9, 12, 15) …</p>
+</div>
+
+<div class="card">
+<h2>5. Properties of Baudhayana triplets</h2>
+<ol style="padding-left:20px">
+<li><b>Scaling:</b> if (a, b, c) is a triplet, then (ka, kb, kc) is also a triplet for any natural number k. From (3, 4, 5) we get (6, 8, 10), (9, 12, 15), (12, 16, 20) …</li>
+<li><b>The hypotenuse is the largest:</b> c is always the biggest number. Also, the smallest number that can appear in any triplet is 3.</li>
+<li><b>At least one leg is even,</b> so the area ½ × a × b is always a whole number. Example: (5, 12, 13) has area ½ × 5 × 12 = 30.</li>
+<li><b>Odd and even:</b> in a primitive triplet (no common factor), one leg is odd, the other leg is even, and the hypotenuse is odd. Example: (8, 15, 17).</li>
+<li><b>Divisibility:</b> in every triplet, one number is a multiple of 3, one is a multiple of 4 and one is a multiple of 5 (sometimes one number does two jobs). So a × b × c is always a multiple of 60. Example: (5, 12, 13) → 12 is a multiple of 3 and 4, and 5 is a multiple of 5.</li>
+<li><b>Rule 1 triplets:</b> the hypotenuse is always 2 more than the longer leg, because (m² + 1) − (m² − 1) = 2. Example: (8, 15, 17) → 17 − 15 = 2.</li>
+<li><b>Every odd number from 3 is in a triplet:</b> for odd n, use (n, (n² − 1)/2, (n² + 1)/2). Example: n = 7 → (7, 24, 25). Every even number from 4 is in a Rule 1 triplet too: n = 2m.</li>
+<li><b>Converse:</b> if three sides satisfy a² + b² = c², the triangle must be right-angled. This is why the 3-4-5 rope makes a perfect right angle.</li>
+</ol>
+<p style="margin-top:12px"><b>Test the properties:</b> enter a triplet and see them in action.</p>
+<p><input type="text" id="ppa" inputmode="numeric" placeholder="first"> , <input type="text" id="ppb" inputmode="numeric" placeholder="second"> , <input type="text" id="ppc" inputmode="numeric" placeholder="third"> &nbsp;<button class="btn" id="ppgo">Show properties</button></p>
+<div id="ppout" style="font-weight:600"></div>
+</div>
+
+<div class="card">
+<h2>5B. Triplet ki properties (Hinglish mein)</h2>
+<p class="sub">Har property ek alag box mein hai, aur uske neeche ek example bhi hai.</p>
+
+<div class="prop"><h3>Property 1: Guna karne par bhi triplet rehta hai (Scaling)</h3>
+<p>Agar (a, b, c) triplet hai, to (ka, kb, kc) bhi triplet hoga, jahan k koi bhi natural number ho.</p>
+<div class="ex"><b>Example:</b> (3, 4, 5) × 2 = <b>(6, 8, 10)</b> → 36 + 64 = 100 ✔<br>(3, 4, 5) × 3 = <b>(9, 12, 15)</b> → 81 + 144 = 225 ✔</div></div>
+
+<div class="prop"><h3>Property 2: Hypotenuse sabse bada hota hai</h3>
+<p>c (hypotenuse) hamesha teeno numbers mein sabse bada hota hai. Aur kisi bhi triplet mein sabse chhota number 3 hota hai, 1 ya 2 se triplet ban hi nahi sakta.</p>
+<div class="ex"><b>Example:</b> (3, 4, 5) mein 5 sabse bada hai, isliye 5 hypotenuse hai. 3² + 4² = 5² ✔</div></div>
+
+<div class="prop"><h3>Property 3: Ek leg hamesha even hoti hai</h3>
+<p>Isliye triangle ka area ½ × a × b hamesha whole number aata hai.</p>
+<div class="ex"><b>Example:</b> (5, 12, 13) mein 12 even hai. Area = ½ × 5 × 12 = <b>30</b> (whole number) ✔</div></div>
+
+<div class="prop"><h3>Property 4: Odd-even ka pattern (primitive triplet mein)</h3>
+<p>Jis triplet mein teeno numbers ka koi common factor nahi hota, usme ek leg odd, ek leg even aur hypotenuse odd hota hai.</p>
+<div class="ex"><b>Example:</b> (8, 15, 17) → 8 even, 15 odd, 17 odd ✔<br>(20, 21, 29) → 20 even, 21 odd, 29 odd ✔</div></div>
+
+<div class="prop"><h3>Property 5: 3, 4 aur 5 ke multiples</h3>
+<p>Har triplet mein ek number 3 ka multiple, ek number 4 ka multiple aur ek number 5 ka multiple hota hai (kabhi kabhi ek hi number do kaam kar deta hai). Isliye a × b × c hamesha 60 ka multiple hota hai.</p>
+<div class="ex"><b>Example:</b> (5, 12, 13) → 12 = 3 aur 4 dono ka multiple, 5 = 5 ka multiple.<br>Product = 5 × 12 × 13 = 780 = 60 × 13 ✔</div></div>
+
+<div class="prop"><h3>Property 6: Rule 1 wale triplet mein c − b = 2</h3>
+<p>(2m, m² − 1, m² + 1) mein hypotenuse aur lambi leg ka difference hamesha 2 hota hai, kyunki (m² + 1) − (m² − 1) = 2.</p>
+<div class="ex"><b>Example:</b> m = 4 → (8, 15, 17), aur 17 − 15 = 2 ✔<br>m = 5 → (10, 24, 26), aur 26 − 24 = 2 ✔</div></div>
+
+<div class="prop"><h3>Property 7: Har odd number (3 se shuru) kisi triplet mein aata hai</h3>
+<p>Agar n odd number hai, to triplet hoga: <b>(n, (n² − 1)/2, (n² + 1)/2)</b>. Even number n (4 se shuru) ke liye Rule 1 mein n = 2m rakho.</p>
+<div class="ex"><b>Example:</b> n = 7 → (49 − 1)/2 = 24 aur (49 + 1)/2 = 25, yani <b>(7, 24, 25)</b> → 49 + 576 = 625 ✔<br>n = 6 → m = 3 → <b>(6, 8, 10)</b> ✔</div></div>
+
+<div class="prop"><h3>Property 8: Ulta bhi sach hai (Converse)</h3>
+<p>Agar kisi triangle ki sides ke liye a² + b² = c² ho, to wo triangle zaroor right-angled hoga. Isi wajah se 3-4-5 wali rope se perfect right angle banta hai.</p>
+<div class="ex"><b>Example 1:</b> sides 5, 12, 13 → 25 + 144 = 169 = 13², to right angle hai ✔<br><b>Example 2:</b> sides 4, 5, 6 → 16 + 25 = 41, lekin 6² = 36, to right angle nahi hai ✘</div></div>
+</div>
+
+<div class="card">
+<h2>6. Your turn (Rule 1)</h2>
+<p>Using Rule 1, find the triplet for <b id="qm"></b>.</p>
+<p><input type="text" id="qa" placeholder="2m" inputmode="numeric"> , <input type="text" id="qb" placeholder="m²−1" inputmode="numeric"> , <input type="text" id="qc" placeholder="m²+1" inputmode="numeric"> &nbsp;<button class="btn" id="chk">Check</button> <button class="btn" id="nxt" style="background:var(--c1)">New one</button></p>
+<div id="qr" style="font-weight:700"></div>
+</div>
+
+<div class="card">
+<h2>7. Check with Rule 1</h2>
+<p>Enter any three whole numbers (in any order). We check if they form a triplet and if Rule 1, <b>(2m, m² − 1, m² + 1)</b>, can produce them.</p>
+<p><input type="text" id="r1a" inputmode="numeric" placeholder="first"> , <input type="text" id="r1b" inputmode="numeric" placeholder="second"> , <input type="text" id="r1c" inputmode="numeric" placeholder="third"> &nbsp;<button class="btn" id="r1go">Check</button></p>
+<div id="r1out" style="font-weight:600"></div>
+</div>
+
+<div class="card">
+<h2>8. Check with Rule 2</h2>
+<p>Enter any three whole numbers (in any order). We check if they form a triplet and if Rule 2, <b>(m² − n², 2mn, m² + n²)</b> with m &gt; n, can produce them.</p>
+<p><input type="text" id="r2a" inputmode="numeric" placeholder="first"> , <input type="text" id="r2b" inputmode="numeric" placeholder="second"> , <input type="text" id="r2c" inputmode="numeric" placeholder="third"> &nbsp;<button class="btn" id="r2go">Check</button></p>
+<div id="r2out" style="font-weight:600"></div>
+</div>
+</main>
+
+<script>
+(function(){
+var mode='free',st={a:3,b:4,m:2,n:1};
+var svg=document.getElementById('svg');
+var ctl=document.getElementById('controls');
+function slider(id,label,min,max,val){return '<div class="ctl"><label for="'+id+'">'+label+'</label><input type="range" id="'+id+'" min="'+min+'" max="'+max+'" value="'+val+'"><span class="val" id="v_'+id+'">'+val+'</span></div>';}
+function buildCtl(){
+ var h='';
+ if(mode==='free'){h=slider('a','a',1,20,st.a)+slider('b','b',1,20,st.b);}
+ if(mode==='r1'){h=slider('m','m',2,8,st.m);}
+ if(mode==='r2'){h=slider('m','m',2,9,st.m)+slider('n','n',1,st.m-1,Math.min(st.n,st.m-1));}
+ ctl.innerHTML=h;
+ ['a','b','m','n'].forEach(function(k){var e=document.getElementById(k);if(!e)return;
+  e.addEventListener('input',function(){st[k]=+e.value;
+   if(mode==='r2'&&k==='m'){var ne=document.getElementById('n');ne.max=st.m-1;if(st.n>st.m-1){st.n=st.m-1;ne.value=st.n;document.getElementById('v_n').textContent=st.n;}}
+   document.getElementById('v_'+k).textContent=e.value;draw();});});
+}
+function sides(){
+ if(mode==='free')return {a:st.a,b:st.b,c:Math.sqrt(st.a*st.a+st.b*st.b)};
+ if(mode==='r1'){var m=st.m;return {a:2*m,b:m*m-1,c:m*m+1};}
+ var m=st.m,n=Math.min(st.n,st.m-1);return {a:m*m-n*n,b:2*m*n,c:m*m+n*n};
+}
+function pts(a){return a.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ');}
+function fmt(x){return Number.isInteger(x)?String(x):x.toFixed(2);}
+function draw(){
+ var S=sides(),a=S.a,b=S.b,c=S.c;
+ var s=Math.min(500/(a+2*b),440/(2*a+b));
+ var x0=50+b*s,y0=40+(a+b)*s;
+ var A=[x0+a*s,y0],C=[x0,y0-b*s],B=[x0,y0];
+ var sqA=[B,A,[A[0],A[1]+a*s],[B[0],B[1]+a*s]];
+ var sqB=[B,C,[C[0]-b*s,C[1]],[B[0]-b*s,B[1]]];
+ var n=[b*s,-a*s];
+ var sqC=[A,C,[C[0]+n[0],C[1]+n[1]],[A[0]+n[0],A[1]+n[1]]];
+ function ctr(q){return [(q[0][0]+q[2][0])/2,(q[0][1]+q[2][1])/2];}
+ function grid(q,w,h){var o='',i;var p=q[0],d1=[(q[1][0]-p[0])/w,(q[1][1]-p[1])/w],d2=[(q[3][0]-p[0])/h,(q[3][1]-p[1])/h];
+  if(w>20||h>20)return '';
+  for(i=1;i<w;i++)o+='<line x1="'+(p[0]+d1[0]*i)+'" y1="'+(p[1]+d1[1]*i)+'" x2="'+(p[0]+d1[0]*i+d2[0]*h)+'" y2="'+(p[1]+d1[1]*i+d2[1]*h)+'"/>';
+  for(i=1;i<h;i++)o+='<line x1="'+(p[0]+d2[0]*i)+'" y1="'+(p[1]+d2[1]*i)+'" x2="'+(p[0]+d2[0]*i+d1[0]*w)+'" y2="'+(p[1]+d2[1]*i+d1[1]*w)+'"/>';
+  return o;}
+ var cA=ctr(sqA),cB=ctr(sqB),cC=ctr(sqC);
+ var fs=Math.max(11,Math.min(18,s*Math.min(a,b)*0.28));
+ var out='';
+ out+='<polygon points="'+pts(sqA)+'" fill="var(--c1)" fill-opacity=".25" stroke="var(--c1)" stroke-width="2"/>';
+ out+='<polygon points="'+pts(sqB)+'" fill="var(--c2)" fill-opacity=".25" stroke="var(--c2)" stroke-width="2"/>';
+ out+='<polygon points="'+pts(sqC)+'" fill="var(--c3)" fill-opacity=".2" stroke="var(--c3)" stroke-width="2"/>';
+ out+='<g stroke="var(--c1)" stroke-opacity=".35" stroke-width="1">'+grid(sqA,a,a)+'</g>';
+ out+='<g stroke="var(--c2)" stroke-opacity=".35" stroke-width="1">'+grid(sqB,b,b)+'</g>';
+ out+='<g stroke="var(--c3)" stroke-opacity=".3" stroke-width="1">'+(Number.isInteger(c)?grid(sqC,c,c):'')+'</g>';
+ out+='<polygon points="'+pts([B,A,C])+'" fill="var(--card)" stroke="var(--tx)" stroke-width="2.5"/>';
+ out+='<path d="M'+(x0+14)+','+y0+' v-14 h-14" fill="none" stroke="var(--tx)" stroke-width="1.5" transform="translate(0,0)"/>';
+ var t='text-anchor="middle" dominant-baseline="middle" font-weight="700" font-size="'+fs+'"';
+ out+='<text x="'+cA[0]+'" y="'+cA[1]+'" '+t+' fill="var(--c1)">a² = '+fmt(a*a)+'</text>';
+ out+='<text x="'+cB[0]+'" y="'+cB[1]+'" '+t+' fill="var(--c2)">b² = '+fmt(b*b)+'</text>';
+ out+='<text x="'+cC[0]+'" y="'+cC[1]+'" '+t+' fill="var(--c3)">c² = '+fmt(c*c)+'</text>';
+ var ts='text-anchor="middle" font-weight="700" font-size="15"';
+ out+='<text x="'+((B[0]+A[0])/2)+'" y="'+(B[1]-8)+'" '+ts+' fill="var(--c1)">a = '+fmt(a)+'</text>';
+ out+='<text x="'+(B[0]+8)+'" y="'+((B[1]+C[1])/2)+'" font-weight="700" font-size="15" fill="var(--c2)">b = '+fmt(b)+'</text>';
+ var hx=(A[0]+C[0])/2-8,hy=(A[1]+C[1])/2-8;
+ out+='<text x="'+hx+'" y="'+hy+'" text-anchor="end" font-weight="700" font-size="15" fill="var(--c3)">c = '+fmt(c)+'</text>';
+ svg.innerHTML=out;
+ var whole=Number.isInteger(a)&&Number.isInteger(b)&&Number.isInteger(c);
+ document.getElementById('eq').innerHTML='<span class="a">'+fmt(a*a)+'</span>+<span class="b">'+fmt(b*b)+'</span>=<span class="c">'+fmt(a*a+b*b)+'</span>';
+ var bd=document.getElementById('badge');
+ if(whole){bd.className='badge ok';bd.textContent='✔ ('+a+', '+b+', '+c+') is a Baudhayana triplet: all whole numbers!';}
+ else{bd.className='badge no';bd.textContent='Right triangle, but c = '+fmt(c)+' is not a whole number, so this is not a triplet. Try other values!';}
+ var w=document.getElementById('work');
+ if(mode==='r1'){var m=st.m;w.innerHTML='m = '+m+' → 2m = <b class="a">'+2*m+'</b>, m²−1 = <b class="b">'+(m*m-1)+'</b>, m²+1 = <b class="c">'+(m*m+1)+'</b>';}
+ else if(mode==='r2'){var m2=st.m,n2=Math.min(st.n,st.m-1);w.innerHTML='m = '+m2+', n = '+n2+' → m²−n² = <b class="a">'+a+'</b>, 2mn = <b class="b">'+b+'</b>, m²+n² = <b class="c">'+c+'</b>';}
+ else w.innerHTML='c = √(a² + b²) = √'+fmt(a*a+b*b)+' = '+fmt(c);
+}
+document.querySelectorAll('#tabs button').forEach(function(btn){
+ btn.addEventListener('click',function(){
+  document.querySelectorAll('#tabs button').forEach(function(x){x.classList.remove('on');});
+  btn.classList.add('on');mode=btn.dataset.m;
+  if(mode==='r2'&&st.m<2)st.m=2;
+  buildCtl();draw();});});
+buildCtl();draw();
+
+var rows='';
+for(var m=2;m<=9;m++){rows+='<tr><td>'+m+'</td><td class="a">'+2*m+'</td><td class="b">'+(m*m-1)+'</td><td class="c">'+(m*m+1)+'</td><td>'+(4*m*m)+' + '+Math.pow(m*m-1,2)+' = '+Math.pow(m*m+1,2)+'</td></tr>';}
+document.getElementById('t1').innerHTML=rows;
+
+function gcd(x,y){return y?gcd(y,x%y):x;}
+var pairs=[[2,1],[3,1],[3,2],[4,1],[4,3],[5,2],[5,4],[6,5],[7,2]],r2='';
+pairs.forEach(function(p){var m=p[0],n=p[1],a=m*m-n*n,b=2*m*n,c=m*m+n*n,g=gcd(gcd(a,b),c);
+ r2+='<tr><td>'+m+'</td><td>'+n+'</td><td class="a">'+a+'</td><td class="b">'+b+'</td><td class="c">'+c+'</td><td>'+(a*a)+' + '+(b*b)+' = '+(c*c)+'</td><td>'+(g===1?'Primitive':g+' \u00d7 ('+a/g+', '+b/g+', '+c/g+')')+'</td></tr>';});
+document.getElementById('t2').innerHTML=r2;
+
+document.getElementById('ppgo').addEventListener('click',function(){
+ var out=document.getElementById('ppout'),v=readNums('pp');
+ if(!v){out.style.color='var(--bad)';out.textContent='Please enter three positive whole numbers.';return;}
+ var a=v[0],b=v[1],c=v[2];
+ if(a*a+b*b!==c*c){out.style.color='var(--bad)';out.textContent='('+a+', '+b+', '+c+') is not a triplet: '+(a*a)+' + '+(b*b)+' ≠ '+(c*c)+'.';return;}
+ function who(k){var r=[a,b,c].filter(function(x){return x%k===0;});return r.length?r.join(', '):'none';}
+ var g=gcd(gcd(a,b),c);
+ out.style.color='var(--tx)';
+ out.innerHTML='✔ ('+a+', '+b+', '+c+') is a triplet: '+(a*a)+' + '+(b*b)+' = '+(c*c)+'<br>'
+ +'Largest number (hypotenuse): '+c+' ('+(c%2?'odd':'even')+')<br>'
+ +'Even legs: '+[a,b].filter(function(x){return x%2===0;}).join(', ')+'<br>'
+ +'Area = ½ × '+a+' × '+b+' = '+(a*b/2)+'<br>'
+ +'Multiples of 3: '+who(3)+' | of 4: '+who(4)+' | of 5: '+who(5)+'<br>'
+ +'Product '+a+' × '+b+' × '+c+' = '+(a*b*c)+' = 60 × '+(a*b*c/60)+'<br>'
+ +(g===1?'Primitive triplet (no common factor).':'Not primitive: it is '+g+' × ('+a/g+', '+b/g+', '+c/g+').')
+ +(c-b===2?'<br>Here c − b = 2, like a Rule 1 triplet.':'');
+});
+document.getElementById('cgo').addEventListener('click',function(){
+ var out=document.getElementById('cout'),ms=document.getElementById('cm').value.trim(),ns=document.getElementById('cn').value.trim();
+ if(!/^\d+$/.test(ms)||!/^\d+$/.test(ns)||+ns<1||+ms<=+ns){out.style.color='var(--bad)';out.textContent='Enter whole numbers with m greater than n, and n at least 1.';return;}
+ var m=+ms,n=+ns,a=m*m-n*n,b=2*m*n,c=m*m+n*n;
+ out.style.color='var(--ok)';
+ out.innerHTML='m² \u2212 n² = '+a+', 2mn = '+b+', m² + n² = '+c+'<br>\u2714 ('+a+', '+b+', '+c+'): '+(a*a)+' + '+(b*b)+' = '+(c*c);
+});
+
+var qm=0;
+function newQ(){qm=2+Math.floor(Math.random()*10);document.getElementById('qm').textContent='m = '+qm;
+ ['qa','qb','qc'].forEach(function(i){document.getElementById(i).value='';});document.getElementById('qr').textContent='';}
+document.getElementById('chk').addEventListener('click',function(){
+ var a=+document.getElementById('qa').value,b=+document.getElementById('qb').value,c=+document.getElementById('qc').value;
+ var r=document.getElementById('qr');
+ if(a===2*qm&&b===qm*qm-1&&c===qm*qm+1){r.style.color='var(--ok)';r.textContent='✔ Correct! '+a+'² + '+b+'² = '+c+'²';}
+ else{r.style.color='var(--bad)';r.textContent='Not yet. Hint: 2m = '+2*qm+', then square m, and subtract or add 1.';}
+});
+document.getElementById('nxt').addEventListener('click',newQ);
+newQ();
+
+function readNums(p){
+ var v=['a','b','c'].map(function(k){var s=document.getElementById(p+k).value.trim();return /^\d+$/.test(s)?+s:NaN;});
+ if(v.some(function(x){return !(x>0);}))return null;
+ return v.sort(function(x,y){return x-y;});
+}
+function isSq(x){var r=Math.round(Math.sqrt(x));return r*r===x?r:-1;}
+function rule1(a,b,c){
+ var L=[[a,b],[b,a]];
+ for(var i=0;i<2;i++){var e=L[i][0],o=L[i][1];
+  if(e%2===0){var m=e/2;if(m>1&&o===m*m-1&&c===m*m+1)return {m:m,e:e,o:o};}}
+ return null;
+}
+function rule2(a,b,c){
+ var L=[[a,b],[b,a]];
+ for(var i=0;i<2;i++){var p=L[i][0],q=L[i][1];
+  if((c+p)%2===0){var M=(c+p)/2,N=(c-p)/2,m=isSq(M),n=isSq(N);
+   if(m>0&&n>0&&m>n&&2*m*n===q)return {m:m,n:n,p:p,q:q};}}
+ return null;
+}
+function wire(p,rule,fmtOk,fmtNo){
+ document.getElementById(p+'go').addEventListener('click',function(){
+  var out=document.getElementById(p+'out'),v=readNums(p);
+  if(!v){out.style.color='var(--bad)';out.textContent='Please enter three positive whole numbers.';return;}
+  var a=v[0],b=v[1],c=v[2];
+  var sum=a*a+b*b,line=a+'² + '+b+'² = '+(a*a)+' + '+(b*b)+' = '+sum+';  '+c+'² = '+(c*c)+'. ';
+  if(sum!==c*c){out.style.color='var(--bad)';out.innerHTML=line+'<br>✘ '+sum+' ≠ '+(c*c)+', so <b>('+a+', '+b+', '+c+') is not a triplet</b> at all.';return;}
+  var r=rule(a,b,c);
+  if(r){out.style.color='var(--ok)';out.innerHTML=line+'<br>✔ It is a triplet, and '+fmtOk(r,a,b,c);}
+  else{out.style.color='var(--bad)';out.innerHTML=line+'<br>✔ It is a valid triplet, but '+fmtNo(a,b,c);}
+ });
+}
+wire('r1',rule1,
+ function(r){return 'Rule 1 gives it: 2m = '+r.e+' → m = '+r.m+', m² − 1 = '+r.o+', m² + 1 = '+(r.m*r.m+1)+'.';},
+ function(a,b,c){return 'Rule 1 cannot produce it (no m works). Try Rule 2 or scaling a smaller triplet.';});
+wire('r2',rule2,
+ function(r,a,b,c){return 'Rule 2 gives it: m² = ('+c+' + '+r.p+')/2 = '+(r.m*r.m)+' → m = '+r.m+', n² = ('+c+' − '+r.p+')/2 = '+(r.n*r.n)+' → n = '+r.n+'. Check: 2mn = '+r.q+'.';},
+ function(a,b,c){return 'Rule 2 cannot produce it directly (no whole m, n work). It is probably a multiple of a smaller triplet; try dividing all three by a common factor.';});
+})();
+</script>
+</body>
+</html>
